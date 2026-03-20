@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 from callbot.health.router import configure_health_dependencies, router as health_router
 from server.config import ServerConfig
 from server.routes import router as api_router
+from server.ws import router as ws_router
 from callbot.session.exceptions import SessionNotFoundError
 
 logger = logging.getLogger(__name__)
@@ -188,11 +189,18 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Request ID middleware
+    from server.middleware import RequestIDMiddleware
+    app.add_middleware(RequestIDMiddleware)
+
     # Health router
     app.include_router(health_router)
 
     # API router
     app.include_router(api_router)
+
+    # WebSocket router
+    app.include_router(ws_router)
 
     # Error handlers
     @app.exception_handler(SessionNotFoundError)
