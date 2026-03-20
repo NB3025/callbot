@@ -83,7 +83,7 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to ECR
@@ -92,9 +92,9 @@ jobs:
       - name: Build & push Docker image
         run: |
           IMAGE_TAG="${{ github.sha }}"
-          docker build -t ${{ vars.ECR_REPO }}:$IMAGE_TAG -t ${{ vars.ECR_REPO }}:latest .
-          docker push ${{ vars.ECR_REPO }}:$IMAGE_TAG
-          docker push ${{ vars.ECR_REPO }}:latest
+          docker build -t ${{ secrets.ECR_REPO }}:$IMAGE_TAG -t ${{ secrets.ECR_REPO }}:latest .
+          docker push ${{ secrets.ECR_REPO }}:$IMAGE_TAG
+          docker push ${{ secrets.ECR_REPO }}:latest
 
       - name: Deploy to ECS
         run: |
