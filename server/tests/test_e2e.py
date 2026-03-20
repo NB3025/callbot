@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 import os
+import sys
 import pytest
 from unittest.mock import MagicMock, patch
 from httpx import ASGITransport, AsyncClient
 
 
-E2E_DATABASE_URL = os.environ.get("E2E_DATABASE_URL", "postgresql://callbot:localdev@localhost:5432/callbot")
+E2E_DATABASE_URL = os.environ.get("E2E_DATABASE_URL", "postgresql://callbot:callbot@localhost:5432/callbot")
 E2E_REDIS_HOST = os.environ.get("E2E_REDIS_HOST", "localhost")
 E2E_REDIS_PORT = os.environ.get("E2E_REDIS_PORT", "6380")
 
@@ -24,6 +25,10 @@ def _e2e_env(monkeypatch):
     monkeypatch.setenv("REDIS_PORT", E2E_REDIS_PORT)
     monkeypatch.setenv("BEDROCK_MODEL_ID", "test-model")
     monkeypatch.setenv("BEDROCK_REGION", "ap-northeast-2")
+    monkeypatch.setenv("ENVIRONMENT", "local")
+    # fresh import 보장
+    for mod in [k for k in sys.modules if k.startswith("server")]:
+        del sys.modules[mod]
 
 
 @skip_no_e2e
