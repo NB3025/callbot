@@ -60,13 +60,24 @@ async def ws_endpoint(
                         text=text,
                         session_id=current_session_id,
                     )
-                    await websocket.send_json({
-                        "type": "response",
-                        "session_id": result.get("session_id", current_session_id),
-                        "response_text": result.get("response_text", ""),
-                        "action_type": result.get("action_type", ""),
-                        "context": result.get("context", {}),
-                    })
+                    # result can be dict or TurnResult dataclass
+                    if hasattr(result, 'session_id'):
+                        resp = {
+                            "type": "response",
+                            "session_id": result.session_id or current_session_id,
+                            "response_text": result.response_text or "",
+                            "action_type": result.action_type or "",
+                            "context": result.context or {},
+                        }
+                    else:
+                        resp = {
+                            "type": "response",
+                            "session_id": result.get("session_id", current_session_id),
+                            "response_text": result.get("response_text", ""),
+                            "action_type": result.get("action_type", ""),
+                            "context": result.get("context", {}),
+                        }
+                    await websocket.send_json(resp)
                 else:
                     await websocket.send_json({
                         "type": "error",
