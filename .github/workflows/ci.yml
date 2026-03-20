@@ -26,7 +26,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --extra dev
 
       - name: Unit tests
         run: uv run pytest server/tests/ --ignore=server/tests/test_e2e.py -v
@@ -64,7 +64,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --extra dev
 
       - name: E2E tests
         env:
