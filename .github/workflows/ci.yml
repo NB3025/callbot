@@ -92,13 +92,14 @@ jobs:
       - name: Build & push Docker image
         run: |
           IMAGE_TAG="${{ github.sha }}"
-          docker build -t ${{ secrets.ECR_REPO }}:$IMAGE_TAG -t ${{ secrets.ECR_REPO }}:latest .
-          docker push ${{ secrets.ECR_REPO }}:$IMAGE_TAG
-          docker push ${{ secrets.ECR_REPO }}:latest
+          ECR_REPO="${{ secrets.ECR_REPO }}"
+          docker build -t "${ECR_REPO}:${IMAGE_TAG}" -t "${ECR_REPO}:latest" .
+          docker push "${ECR_REPO}:${IMAGE_TAG}"
+          docker push "${ECR_REPO}:latest"
 
       - name: Deploy to ECS
         run: |
           aws ecs update-service \
-            --cluster $ECS_CLUSTER \
-            --service $ECS_SERVICE \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
             --force-new-deployment
