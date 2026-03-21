@@ -69,7 +69,7 @@ class TurnPipeline:
 
         # 분기
         if action.action_type == ActionType.PROCESS_BUSINESS:
-            system_prompt = "당신은 LGU+ 고객센터 AI 상담사입니다. 고객의 요청에 친절하고 정확하게 답변하세요."
+            system_prompt = "당신은 AnyTelecom 고객센터 AI 상담사입니다. 고객의 요청에 친절하고 정확하게 답변하세요."
             response_text = await loop.run_in_executor(
                 _executor, self._llm_engine.generate, system_prompt, text
             )
